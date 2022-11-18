@@ -1,0 +1,107 @@
+.cell-wrapper{
+  flex: 1;
+  flex-wrap: wrap;
+  margin-left: 56px;
+}
+.cell-row{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.cell{
+  width: 50px;
+  height: 45px;
+  border: 2px solid #000;
+  display: inline-block;
+  margin: 1px;
+  font-size: 30px;
+  text-align: center;
+  padding-top: 5px;
+  position: relative;
+}
+.cell.pointer{
+  cursor: pointer;
+}
+
+.cell:focus{
+  background-color: #35d330;
+}
+
+.cell.correct{
+  border: 2px dotted #000;
+}
+.cell.wrong{
+  background-color: red;
+}
+.cell.ridge{
+  border: 2px solid #35d330;
+}
+
+
+.cell.correct.ridge{
+  border: 2px dotted #35d330;
+}
+
+
+.cell.ridge.orientation-down:after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid #eb5c5c;
+  position: absolute;
+  transform: rotate(90deg);
+  top: -7px;
+  left: 20px;
+}
+
+.cell.ridge.orientation-across:after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid #eb5c5c;
+  position: absolute;
+  top: 14px;
+  left: 0px;
+}
+.cell.empty{
+  background-color: #000;
+}
+
+.cell.indicator{
+  background-color: #e7e7e7;
+}
+.indicator-column{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+}
+
+/*
+  app-dark 
+*/
+.app-dark {
+  background-color: darkcyan;
+  width: 100%;
+  height: 100%;
+}
+
+.app-dark .cell.ridge.orientation-down:after ,
+.app-dark .cell.ridge.orientation-across:after {
+  border-left: 10px solid #ccc;
+}
+.app-dark .cell.ridge{
+  border: 2px solid #e4e2e2;
+}
+.app-dark .cell.correct.ridge{
+  border: 2px dotted #e4e2e2;
+}
+
+.app-dark .cell.indicator{
+  background-color: #8f8fa1;
+}
