@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Cell from "./cell/Cell";
 import QuestionBox from "./question/QuestionBox";
 import QuestionList from "./question/QuestionList";
@@ -9,28 +9,39 @@ import CellEmpty from "./cell/CellEmpty";
 import CellRow from "./cell/CellRow";
 import Indicator from "./indicator/Indicator";
 
-var qs = [
-  {
-    clue: "that which is established as a rule or model by authority, custom, or general consent",
-    answer: "standard",
-  },
-  { clue: "a machine that computes", answer: "computer" },
-  {
-    clue: "the collective designation of items for a particular purpose",
-    answer: "equipment",
-  },
-  { clue: "an opening or entrance to an inclosed place", answer: "port" },
-  {
-    clue: "a point where two things can connect and interact",
-    answer: "interface",
-  },
-];
-
 export default function Game() {
   const darkTheme = useTheme();
   const toggleTheme = useThemeUpdate();
-  const [currentQuestion, setCurrentQuestion] = useState(qs[0]);
+  const [data, setData] = useState();
+  const [currentQuestion, setCurrentQuestion] = useState();
   const [showAnswer, setShowAnswer] = useState(false);
+
+  const getData = () => {
+    fetch("data.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        if (myJson) {
+          let qs = generateLayout(myJson);
+          setData(qs);
+        }
+      });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setCurrentQuestion(data.result[0]);
+    }
+  }, [data]);
 
   const handleSelectQuestion = (question) => {
     setCurrentQuestion(question);
@@ -41,10 +52,9 @@ export default function Game() {
   };
 
   const cellClickHandle = (x, y) => {
-    result.result.forEach((element) => {
+    data.result.forEach((element) => {
       element.positions.forEach((pos) => {
         if (x === pos.x && y === pos.y) {
-          console.log(element.answer);
           setCurrentQuestion(element);
         }
       });
@@ -52,6 +62,8 @@ export default function Game() {
   };
 
   function rendredCells(result) {
+    if (!currentQuestion) return;
+
     const cells = [];
     if (!result) return cells;
     for (let column = 0; column < result.rows; column++) {
@@ -89,21 +101,32 @@ export default function Game() {
     return cells;
   }
 
-  var result = generateLayout(qs);
   return (
     <>
       <div className={darkTheme ? "app-dark" : ""}>
         <button onClick={handleShowAnswer}>Show Answers</button>
         <button onClick={toggleTheme}>Dark Mode</button>
         <hr />
-        <QuestionList
-          questions={result}
-          onSelectQuestion={handleSelectQuestion}
-        />
-        <QuestionBox>{currentQuestion.clue}</QuestionBox>
-        <Indicator row={result.rows} column={result.cols}>
-          <div className="cell-wrapper">{rendredCells(result)}</div>
-        </Indicator>
+        {data && data.result.length ? (
+          <div>
+            <QuestionList
+              questions={data}
+              onSelectQuestion={handleSelectQuestion}
+            />
+
+            {currentQuestion ? (
+              <QuestionBox>{currentQuestion.clue} </QuestionBox>
+            ) : (
+              <div></div>
+            )}
+
+            <Indicator row={data.rows} column={data.cols}>
+              <div className="cell-wrapper">{rendredCells(data)}</div>
+            </Indicator>
+          </div>
+        ) : (
+          <b>Loading...</b>
+        )}
       </div>
     </>
   );

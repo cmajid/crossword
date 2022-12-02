@@ -1,3 +1,4 @@
+
 .cell-wrapper{
   flex: 1;
   flex-wrap: wrap;
@@ -89,6 +90,7 @@
   background-color: darkcyan;
   width: 100%;
   height: 100%;
+  padding-bottom: 30px;
 }
 
 .app-dark .cell.ridge.orientation-down:after ,
